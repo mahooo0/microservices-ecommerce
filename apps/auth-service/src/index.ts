@@ -8,7 +8,7 @@ import { producer } from "./utils/kafka.js";
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:3003"],
+    origin: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:3003"],
     credentials: true,
   })
 );
@@ -35,8 +35,9 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 const start = async () => {
   try {
     await producer.connect();
-    app.listen(8003, () => {
-      console.log("Auth service is running on 8003");
+    const port = Number(process.env.PORT) || 4003;
+    app.listen(port, () => {
+      console.log(`Auth service is running on ${port}`);
     });
   } catch (error) {
     console.log(error);

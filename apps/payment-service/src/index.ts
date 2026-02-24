@@ -9,7 +9,7 @@ import webhookRoute from "./routes/webhooks.route.js";
 
 const app = new Hono();
 app.use("*", clerkMiddleware());
-app.use("*", cors({ origin: ["http://localhost:3002"] }));
+app.use("*", cors({ origin: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:3002"] }));
 
 app.get("/health", (c) => {
   return c.json({
@@ -47,13 +47,14 @@ const start = async () => {
   try {
     Promise.all([await producer.connect(), await consumer.connect()]);
     await runKafkaSubscriptions()
+    const port = Number(process.env.PORT) || 4002;
     serve(
       {
         fetch: app.fetch,
-        port: 8002,
+        port,
       },
       (info) => {
-        console.log(`Payment service is running on port 8002`);
+        console.log(`Payment service is running on port ${port}`);
       }
     );
   } catch (error) {
