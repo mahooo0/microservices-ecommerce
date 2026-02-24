@@ -1,1 +1,88 @@
 @import "tailwindcss";
+
+@theme {
+  --color-black-1: #26262E;
+  --color-black-2: #515458;
+}
+
+/* Fonts */
+
+@utility font-unbounded {
+  font-family: var(--font-unbounded), sans-serif;
+}
+
+@utility font-geologica {
+  font-family: var(--font-geologica), sans-serif;
+}
+
+body {
+  font-family: var(--font-geologica), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-unbounded), sans-serif;
+}
+
+/* Background gradients */
+
+@utility bg-gradient-blue-to-pink {
+  background: linear-gradient(180deg, #C0D1F6 0%, #FBE2EC 100%);
+}
+
+@utility bg-gradient-blue-to-pink-diagonal {
+  background: linear-gradient(103.38deg, #BED0F5 0%, #FBE1EC 98.53%);
+}
+
+@utility bg-gradient-blue-to-coral {
+  background: linear-gradient(106.36deg, #BED0F5 6.71%, #FACDD4 87.55%);
+}
+
+@utility bg-gradient-pink-to-green {
+  background: linear-gradient(120.9deg, #F5D4D4 9.74%, #DBFBD5 84.2%);
+}
+
+@utility bg-gradient-green-to-yellow {
+  background: linear-gradient(98.57deg, #DDFBD5 5.45%, #F9FBE0 97.8%);
+}
+
+@utility bg-gradient-green-to-blue {
+  background: linear-gradient(125.56deg, #DDFBD5 18.46%, #BFD0F5 87.79%);
+}
+
+@utility bg-gradient-blue-to-lightblue {
+  background: linear-gradient(90deg, #A1C6FB 0%, #D4F2FF 100%);
+}
+
+@utility bg-gradient-mauve-to-green {
+  background: linear-gradient(0deg, #E9D1E1, #E9D1E1),
+    linear-gradient(120.9deg, #F5D4D4 9.74%, #DBFBD5 84.2%);
+}
+
+@utility bg-gradient-pink-to-blue {
+  background: linear-gradient(125.56deg, #FBE2EC 18.46%, #BFD0F5 87.79%);
+}
+
+/* Border gradient */
+
+@utility border-gradient-blue-to-coral {
+  border: 1px solid transparent;
+  border-image: linear-gradient(106.36deg, #BED0F5 6.71%, #FACDD4 87.55%) 1;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+  max-width: 1712px;
+}
+
+/* Animations */
+
+@utility animate-spin-slow {
+  animation: spin 15s linear infinite;
+}
