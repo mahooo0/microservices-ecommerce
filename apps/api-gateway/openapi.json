@@ -1,0 +1,773 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "E-Commerce Microservices API",
+    "description": "Unified API Gateway for all e-commerce microservices: auth, product, order, and payment.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:4004", "description": "Local development" }
+  ],
+  "tags": [
+    { "name": "Auth", "description": "User management (Clerk)" },
+    { "name": "Products", "description": "Product catalog" },
+    { "name": "Categories", "description": "Product categories" },
+    { "name": "Orders", "description": "Order management" },
+    { "name": "Payments", "description": "Stripe checkout & webhooks" },
+    { "name": "Health", "description": "Service health checks" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Gateway health check",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "service": { "type": "string", "example": "api-gateway" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health/{service}": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Service health check (proxied)",
+        "parameters": [
+          {
+            "name": "service",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["product", "order", "payment", "auth"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "List all users",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      },
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Create a user",
+        "description": "Requires admin role. Publishes `user.created` Kafka event.",
+        "security": [{ "clerkAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created user",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get user by ID",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      },
+      "delete": {
+        "tags": ["Auth"],
+        "summary": "Delete user",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "List products",
+        "description": "Public. Supports filtering, sorting, and search.",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc", "oldest"]
+            },
+            "description": "Sort order. Default: newest first."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by category slug"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Case-insensitive name search"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer" },
+            "description": "Max number of results"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Product" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create product",
+        "description": "Publishes `product.created` Kafka event.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProductRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created product",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get product by ID",
+        "description": "Public.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "404": { "description": "Product not found" }
+        }
+      },
+      "put": {
+        "tags": ["Products"],
+        "summary": "Update product",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProductRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated product",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete product",
+        "description": "Requires admin role. Publishes `product.deleted` Kafka event.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted product",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "List categories",
+        "description": "Public.",
+        "responses": {
+          "200": {
+            "description": "List of categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Category" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Categories"],
+        "summary": "Create category",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCategoryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created category",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/categories/{id}": {
+      "put": {
+        "tags": ["Categories"],
+        "summary": "Update category",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCategoryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated category",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      },
+      "delete": {
+        "tags": ["Categories"],
+        "summary": "Delete category",
+        "description": "Requires admin role.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Category deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/user-orders": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get current user's orders",
+        "description": "Requires authenticated user.",
+        "security": [{ "clerkAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User's orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Order" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "List all orders",
+        "description": "Requires admin role. Returns latest orders first.",
+        "security": [{ "clerkAuth": [] }],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer" },
+            "description": "Max number of results"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Order" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/order-chart": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Order analytics (last 6 months)",
+        "description": "Requires admin role. Returns monthly order statistics.",
+        "security": [{ "clerkAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Monthly order stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/OrderChart" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden — admin only" }
+        }
+      }
+    },
+    "/api/sessions/create-checkout-session": {
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Create Stripe checkout session",
+        "description": "Requires authenticated user. Returns client secret for Stripe embedded checkout.",
+        "security": [{ "clerkAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCheckoutRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "checkoutSessionClientSecret": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/sessions/{session_id}": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get checkout session status",
+        "description": "Public. Returns Stripe session and payment status.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "paymentStatus": { "type": "string", "enum": ["paid", "unpaid"] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/webhooks/stripe": {
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Stripe webhook",
+        "description": "Called by Stripe on `checkout.session.completed`. Publishes `payment.successful` Kafka event. Requires raw body (no JSON parsing).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Webhook processed" },
+          "400": { "description": "Invalid signature" }
+        }
+      }
+    },
+    "/api/webhooks": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Webhook health check",
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "clerkAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Clerk JWT token from `Authorization: Bearer <token>` header"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "username": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "emailAddresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "emailAddress": { "type": "string", "format": "email" }
+              }
+            }
+          }
+        }
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "required": ["firstName", "lastName", "username", "emailAddress", "password"],
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "username": { "type": "string" },
+          "emailAddress": {
+            "type": "array",
+            "items": { "type": "string", "format": "email" }
+          },
+          "password": { "type": "string", "minLength": 8 }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "shortDescription": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "integer", "description": "Price in cents" },
+          "sizes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["xs", "s", "m", "l", "xl", "xxl", "34", "36", "38", "40", "42", "44", "46", "48"]
+            }
+          },
+          "colors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "gray", "black", "white"]
+            }
+          },
+          "images": {
+            "type": "object",
+            "description": "Map of color to image URL",
+            "additionalProperties": { "type": "string", "format": "uri" }
+          },
+          "categorySlug": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateProductRequest": {
+        "type": "object",
+        "required": ["name", "shortDescription", "description", "price", "categorySlug", "sizes", "colors", "images"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "shortDescription": { "type": "string", "maxLength": 60 },
+          "description": { "type": "string" },
+          "price": { "type": "integer", "description": "Price in cents" },
+          "categorySlug": { "type": "string" },
+          "sizes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": ["xs", "s", "m", "l", "xl", "xxl", "34", "36", "38", "40", "42", "44", "46", "48"]
+            }
+          },
+          "colors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": ["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "gray", "black", "white"]
+            }
+          },
+          "images": {
+            "type": "object",
+            "description": "Map of color to image URL (must include entry for each color)",
+            "additionalProperties": { "type": "string", "format": "uri" }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" }
+        }
+      },
+      "CreateCategoryRequest": {
+        "type": "object",
+        "required": ["name", "slug"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "slug": { "type": "string", "minLength": 1 }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "userId": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "amount": { "type": "integer", "description": "Amount in cents" },
+          "status": { "type": "string", "enum": ["success", "failed"] },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "quantity": { "type": "integer" },
+                "price": { "type": "integer" }
+              }
+            }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "OrderChart": {
+        "type": "object",
+        "properties": {
+          "month": { "type": "string", "example": "January" },
+          "total": { "type": "integer", "description": "Total order count" },
+          "successful": { "type": "integer", "description": "Successful order count" }
+        }
+      },
+      "CartItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "price": { "type": "integer", "description": "Price in cents" },
+          "quantity": { "type": "integer" },
+          "selectedSize": { "type": "string" },
+          "selectedColor": { "type": "string" }
+        }
+      },
+      "CreateCheckoutRequest": {
+        "type": "object",
+        "required": ["cart"],
+        "properties": {
+          "cart": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CartItem" }
+          }
+        }
+      }
+    }
+  }
+}
