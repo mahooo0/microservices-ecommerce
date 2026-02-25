@@ -1,89 +1,57 @@
-import { createProxyMiddleware, type Options } from "http-proxy-middleware";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import { config } from "./config.js";
 import type { Express } from "express";
-
-const defaultOptions: Partial<Options> = {
-  changeOrigin: true,
-  pathRewrite: { "^/api": "" },
-};
 
 export function setupProxies(app: Express) {
   // Product service
   app.use(
-    "/api/products",
     createProxyMiddleware({
-      ...defaultOptions,
       target: config.services.product,
-    })
-  );
-
-  app.use(
-    "/api/categories",
-    createProxyMiddleware({
-      ...defaultOptions,
-      target: config.services.product,
+      changeOrigin: true,
+      pathFilter: ["/api/products", "/api/categories"],
+      pathRewrite: { "^/api": "" },
     })
   );
 
   // Order service
   app.use(
-    "/api/user-orders",
     createProxyMiddleware({
-      ...defaultOptions,
       target: config.services.order,
-    })
-  );
-
-  app.use(
-    "/api/orders",
-    createProxyMiddleware({
-      ...defaultOptions,
-      target: config.services.order,
-    })
-  );
-
-  app.use(
-    "/api/order-chart",
-    createProxyMiddleware({
-      ...defaultOptions,
-      target: config.services.order,
+      changeOrigin: true,
+      pathFilter: ["/api/user-orders", "/api/orders", "/api/order-chart"],
+      pathRewrite: { "^/api": "" },
     })
   );
 
   // Payment service
   app.use(
-    "/api/sessions",
     createProxyMiddleware({
-      ...defaultOptions,
       target: config.services.payment,
-    })
-  );
-
-  app.use(
-    "/api/webhooks",
-    createProxyMiddleware({
-      ...defaultOptions,
-      target: config.services.payment,
+      changeOrigin: true,
+      pathFilter: ["/api/sessions", "/api/webhooks"],
+      pathRewrite: { "^/api": "" },
     })
   );
 
   // Auth service
   app.use(
-    "/api/users",
     createProxyMiddleware({
-      ...defaultOptions,
       target: config.services.auth,
+      changeOrigin: true,
+      pathFilter: "/api/users",
+      pathRewrite: { "^/api": "" },
     })
   );
 
   // Health check proxy for individual services
   app.use(
-    "/api/health/:service",
     createProxyMiddleware({
-      ...defaultOptions,
-      target: config.services.product, // default, overridden by router
+      target: config.services.product,
+      changeOrigin: true,
+      pathFilter: "/api/health",
       router: (req) => {
-        const service = req.params?.service as keyof typeof config.services;
+        const match = req.url?.match(/\/api\/health\/(\w+)/);
+        const service = match?.[1] as keyof typeof config.services;
         return config.services[service] || config.services.product;
       },
       pathRewrite: { "^/api/health/[^/]+": "/health" },
