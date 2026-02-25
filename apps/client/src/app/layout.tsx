@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Unbounded, Geologica } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
+  subsets: ["latin", "cyrillic"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const geologica = Geologica({
+  variable: "--font-geologica",
+  subsets: ["latin", "cyrillic"],
 });
 
 export const metadata: Metadata = {
@@ -30,11 +31,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <div className="mx-auto p-4 sm:px-0 sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-6xl">
+          className={cn('text-black-1 antialiased relative', unbounded.variable, geologica.variable)}>
+          <div className="flex flex-col min-h-screen">
             <Navbar />
-            {children}
+            <div className="flex-1">{children}</div>
             <Footer />
           </div>
           <ToastContainer position="bottom-right" />
