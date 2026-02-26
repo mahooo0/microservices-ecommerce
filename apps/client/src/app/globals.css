@@ -41,7 +41,11 @@
   --color-black-6: #F2F3F5;
   --color-black-7: #FAFBFC;
   
+  --color-grey-3: #F2F2F5;
+  --color-grey-8: #B3B3C5;
   --color-grey-9: #A5A5BA;
+
+  --color-blue: #D3F1FF;
 }
 
 :root {
@@ -120,15 +124,6 @@
 
 body {
   font-family: var(--font-geologica), sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-unbounded), sans-serif;
 }
 
 /* Background gradients */

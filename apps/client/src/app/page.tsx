@@ -1,10 +1,19 @@
+import Benefits from "@/components/home/benefits";
+import Boxes from "@/components/home/boxes";
+import FAQ from "@/components/home/faq";
 import HomeTop from "@/components/home/home-top";
-import Image from "next/image";
+import Sales from "@/components/home/sales";
 
 const Homepage = async () => {
   return (
     <>
-    <HomeTop />
+      <HomeTop />
+      <Benefits />
+      <div className="overflow-hidden">
+        <Boxes />
+        <Sales />
+      </div>
+      <FAQ />
     </>
   );
 };
