@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Unbounded, Geologica } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import Footer from "@/components/ui/footer";
 
 const unbounded = Unbounded({
   variable: "--font-unbounded",
@@ -18,8 +18,8 @@ const geologica = Geologica({
 });
 
 export const metadata: Metadata = {
-  title: "Trendlama - Best Clothes",
-  description: "Trendlama is the best place to find the best clothes",
+  title: "Ecommerce food",
+  description: "Food store",
 };
 
 export default function RootLayout({
