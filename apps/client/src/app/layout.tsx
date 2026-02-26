@@ -32,7 +32,7 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={cn(
-            "text-black-1 antialiased relative",
+            "text-black-1 antialiased relative bg-bg",
             unbounded.variable,
             geologica.variable,
           )}>
