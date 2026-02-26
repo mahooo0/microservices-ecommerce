@@ -3,7 +3,7 @@ import FooterLogo from "./footer-logo";
 import FooterMenu from "./footer-menu";
 import FooterSocials from "./footer-socials";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <footer className="pt-[70px] pb-[56px] bg-gradient-blue-to-pink relative">
       <div className="absolute bottom-[56px] right-20 w-[390px]">
@@ -18,6 +18,4 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

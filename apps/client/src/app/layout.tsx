@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Unbounded, Geologica } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/header";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
-import Footer from "@/components/ui/footer";
+import Footer from "@/components/footer";
 
 const unbounded = Unbounded({
   variable: "--font-unbounded",
@@ -31,7 +31,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={cn('text-black-1 antialiased relative', unbounded.variable, geologica.variable)}>
+          className={cn(
+            "text-black-1 antialiased relative",
+            unbounded.variable,
+            geologica.variable,
+          )}>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <div className="flex-1">{children}</div>
