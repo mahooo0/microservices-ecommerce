@@ -12,6 +12,7 @@ export default function HomeBanner() {
           className="w-full h-auto object-cover"
           width={1920}
           height={1080}
+          unoptimized
         />
       </div>
       <Image

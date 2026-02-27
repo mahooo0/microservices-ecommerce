@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/header";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { cn } from "@/lib/utils";
 import Footer from "@/components/footer";
 
@@ -36,11 +37,13 @@ export default function RootLayout({
             unbounded.variable,
             geologica.variable,
           )}>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <div className="flex-1">{children}</div>
-            <Footer />
-          </div>
+          <NuqsAdapter>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </div>
+          </NuqsAdapter>
           <ToastContainer position="bottom-right" />
         </body>
       </html>

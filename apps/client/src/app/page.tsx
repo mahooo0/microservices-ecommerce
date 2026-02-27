@@ -13,7 +13,7 @@ const Homepage = async () => {
         <Boxes />
         <Sales />
       </div>
-      <FAQ />
+      <FAQ className="bg-white"/>
     </>
   );
 };

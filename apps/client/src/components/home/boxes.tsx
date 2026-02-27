@@ -21,6 +21,7 @@ export default function Boxes() {
               width={982}
               height={865}
               className="mx-auto"
+              unoptimized
             />
             <StarButton
               href="/products"

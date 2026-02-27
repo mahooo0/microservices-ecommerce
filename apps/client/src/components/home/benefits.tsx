@@ -170,7 +170,7 @@ export default function Benefits() {
   );
 
   return (
-    <section ref={sectionRef} className="h-screen flex flex-col justify-center overflow-hidden">
+    <section ref={sectionRef} className="h-screen flex flex-col justify-center overflow-hidden bg-white">
       <div className="container">
         <div className="max-w-[1160px] mx-auto">
           <h2 className="font-unbounded font-bold text-[56px] leading-none uppercase text-center mb-10 relative z-10">

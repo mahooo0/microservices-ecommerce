@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const faqItems = [
   {
@@ -43,11 +42,15 @@ const faqItems = [
   },
 ];
 
-export default function FAQ() {
+interface FAQProps {
+  className?: string;
+}
+
+export default function FAQ({ className }: FAQProps) {
   const [openItem, setOpenItem] = useState<string>("");
 
   return (
-    <section className="py-[100px]">
+    <section className={cn("py-[100px]", className)}>
       <div className="container">
         <h2 className="font-unbounded font-bold text-[56px] uppercase text-center mb-10">
           FAQ
@@ -68,7 +71,7 @@ export default function FAQ() {
                 <AccordionItem
                   value={value}
                   className={cn(
-                    "flex flex-col flex-1 min-w-0 rounded-2xl transition-all border border-black-1 min-h-[120px] [&>h3]:flex-1",
+                    "flex flex-col flex-1 min-w-0 rounded-2xl bg-white transition-all border border-black-1 min-h-[120px] [&>h3]:flex-1",
                     isOpen && "border-none bg-gradient-blue-to-lightblue",
                   )}>
                   <AccordionTrigger className="flex w-full h-auto items-center gap-6 px-8 py-6 text-left font-bold text-lg cursor-pointer hover:no-underline [&>svg]:hidden">
@@ -92,11 +95,14 @@ export default function FAQ() {
                   type="button"
                   onClick={() => setOpenItem(isOpen ? "" : value)}
                   className={cn(
-                    "shrink-0 w-[120px] h-[120px] rounded-2xl border border-black-1 flex items-center justify-center cursor-pointer transition-colors",
+                    "shrink-0 w-[120px] h-[120px] rounded-2xl border border-black-1 flex items-center justify-center cursor-pointer transition-colors bg-white",
                     isOpen && "bg-blue border-transparent",
                   )}>
                   <svg
-                  className={cn("transition-transform", isOpen && "rotate-45")}
+                    className={cn(
+                      "transition-transform",
+                      isOpen && "rotate-45",
+                    )}
                     width="40"
                     height="40"
                     viewBox="0 0 40 40"
