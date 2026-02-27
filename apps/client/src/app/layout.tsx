@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Unbounded, Geologica } from "next/font/google";
+import { Unbounded, Geologica, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/header";
 import { ToastContainer } from "react-toastify";
@@ -15,6 +15,11 @@ const unbounded = Unbounded({
 
 const geologica = Geologica({
   variable: "--font-geologica",
+  subsets: ["latin", "cyrillic"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin", "cyrillic"],
 });
 
@@ -36,6 +41,7 @@ export default function RootLayout({
             "text-black-1 antialiased relative bg-bg",
             unbounded.variable,
             geologica.variable,
+            inter.variable,
           )}>
           <NuqsAdapter>
             <div className="flex flex-col min-h-screen">
