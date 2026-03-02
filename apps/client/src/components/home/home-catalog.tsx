@@ -6,7 +6,7 @@ const mockProducts = [
     name: "Royal Canin Kitten Dry Food",
     description: "Royal Canin Kitten Dry Food 2kg",
     price: 1243,
-    weight: 2000,
+    weight: '2000 г',
     image: "/images/product.png",
     badge: "НОВИНКИ",
     type: 'variable'
@@ -16,7 +16,7 @@ const mockProducts = [
     name: "Royal Canin Kitten Dry Food",
     description: "Royal Canin Kitten Dry Food 2kg",
     price: 1243,
-    weight: 2000,
+    weight: '2000 г',
     image: "/images/product.png",
     badge: "НОВИНКИ",
     type: 'variable'
@@ -26,7 +26,7 @@ const mockProducts = [
     name: "Royal Canin Kitten Dry Food",
     description: "Royal Canin Kitten Dry Food 2kg",
     price: 1243,
-    weight: 2000,
+    weight: '2000 г',
     image: "/images/product.png",
     badge: "НОВИНКИ",
     type: 'single'
@@ -36,7 +36,7 @@ const mockProducts = [
     name: "Royal Canin Kitten Dry Food",
     description: "Royal Canin Kitten Dry Food 2kg",
     price: 1243,
-    weight: 2000,
+    weight: '2000 г',
     image: "/images/product.png",
     badge: "НОВИНКИ",
     type: 'variable'

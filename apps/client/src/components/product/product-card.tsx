@@ -48,7 +48,7 @@ export default function ProductCard({ product }: Props) {
         </span>
         {isVariable && (
           <span className="bg-black-1 font-medium flex items-center justify-center">
-            {product.weight} г
+            {product.weight}
           </span>
         )}
         <Button

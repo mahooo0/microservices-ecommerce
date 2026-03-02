@@ -33,19 +33,22 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   /* Client custom colors */
+  --color-black: #1F1F26;
   --color-black-1: #26262E;
   --color-black-2: #515458;
-  --color-black-3: #515458;
+  --color-black-3: #667085;
   --color-black-4: #515458;
   --color-black-5: #515458;
   --color-black-6: #F2F3F5;
   --color-black-7: #FAFBFC;
   
   --color-grey-3: #F2F2F5;
+  --color-grey-4: #EAEAEF;
   --color-grey-8: #B3B3C5;
   --color-grey-9: #A5A5BA;
 
   --color-blue: #D3F1FF;
+  --color-blue-2: #ECF2FF;
 
   --color-bg: #F2F3F5;
 }
