@@ -1,5 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Hint } from "../hint";
 import AddToFavorite from "./add-to-favorite";
 import ProductBadge from "./product-badge";
@@ -13,10 +14,11 @@ type Props = {
 export default function ProductCard({ product }: Props) {
   const isVariable = product.type === "variable";
   return (
-    <div
+    <Link
+      href={`/product/${product.id}`}
       key={product.id}
-      className="relative rounded-2xl overflow-hidden bg-black-7 px-[27px] py-[11px]">
-      <ProductBadge badge={product.badge} />
+      className="relative rounded-2xl overflow-hidden bg-black-7 px-[27px] py-[11px] block">
+      {product.badge && <ProductBadge badge={product.badge} />}
       <AddToFavorite />
       <div className="rounded-xl overflow-hidden h-[290px] w-auto mb-3">
         <Image
@@ -57,6 +59,6 @@ export default function ProductCard({ product }: Props) {
           <ShoppingCart className="w-4 h-4" />
         </Button>
       </div>
-    </div>
+    </Link>
   );
 }
