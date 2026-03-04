@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import ProfileButton from "../ProfileButton";
 import ShoppingCartIcon from "../ShoppingCartIcon";
+import CatalogDropdown from "./catalog-dropdown";
 import HeaderSearch from "./header-search";
 
 export default function Header() {
   return (
-    <header className="absolute top-0 left-0 pt-4 z-20 w-full">
+    <header className="absolute top-0 left-0 pt-4 z-50 w-full">
       <div className="container">
         <div className="flex justify-between items-center gap-6 rounded-[20px] bg-white px-10 py-6">
           <Link href="/" className="shrink-0 w-full max-w-[132px]">
@@ -22,13 +23,7 @@ export default function Header() {
           </Link>
           <nav>
             <ul className="flex items-center gap-10">
-              <li>
-                <Link
-                  href="/catalog"
-                  className="hover:underline hover:text-black-1/80 transition-all">
-                  Каталог
-                </Link>
-              </li>
+              <CatalogDropdown />
               <li>
                 <Link
                   href="/about"
