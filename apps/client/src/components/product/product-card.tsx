@@ -52,7 +52,7 @@ export default function ProductCard({ product }: Props) {
       className="rounded-2xl bg-white pb-5 block">
       <div className="relative overflow-hidden px-[27px] pt-[11px] rounded-t-2xl">
         {product.badge && <ProductBadge badge={product.badge} />}
-        <AddToFavorite />
+        <AddToFavorite productId={product.id} />
         <div className="rounded-xl overflow-hidden h-[290px] w-auto mb-3">
           <Image
             src={product.image}

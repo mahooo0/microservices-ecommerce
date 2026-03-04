@@ -53,7 +53,7 @@ export default function ProductInfo({
             className="rounded-full size-12 cursor-pointer bg-white">
             <ChartColumnIncreasing className="size-6 text-black" />
           </Button>
-          <AddToFavorite className="static rounded-full size-12 cursor-pointer bg-white" iconColor="text-black" iconSize="size-6" />
+          <AddToFavorite productId={product.id} className="static rounded-full size-12 cursor-pointer bg-white" iconColor="text-black" iconSize="size-6" />
         </div>
       </div>
 
