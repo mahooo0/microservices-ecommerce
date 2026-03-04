@@ -1,6 +1,6 @@
-import { type Product, type ProductVariant, mockProducts } from "@/app/catalog/mock-data";
+import { type Product, type ProductVariant, type ProductColor, mockProducts } from "@/app/catalog/mock-data";
 
-export type { ProductVariant };
+export type { ProductVariant, ProductColor };
 
 export type ProductDetail = Product & {
   productCode: string;
@@ -9,6 +9,7 @@ export type ProductDetail = Product & {
   oldPrice?: number;
   discount?: number;
   variants?: ProductVariant[];
+  colors?: ProductColor[];
   composition: string;
   fullDescription: string;
 };
@@ -99,6 +100,7 @@ function buildDetail(product: Product): ProductDetail {
     oldPrice,
     discount,
     variants,
+    colors: product.colors,
     composition: compositions[key],
     fullDescription: descriptions[key],
   };

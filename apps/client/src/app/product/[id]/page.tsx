@@ -38,7 +38,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  const { weight } = await searchParamsCache.parse(await searchParams);
+  const { weight, color } = await searchParamsCache.parse(await searchParams);
 
   // Resolve selected variant
   const variants = product.variants ?? [];
@@ -60,6 +60,12 @@ export default async function ProductPage({ params, searchParams }: Props) {
     notFound();
   }
 
+  // Resolve selected color
+  const colors = product.colors ?? [];
+  const selectedColor = colors.find((c) => c.name === color)?.name
+    ?? colors[0]?.name
+    ?? "";
+
   const breadcrumbItems = buildBreadcrumbItems(product);
   const recommendedProducts = getRecommendedProducts(product.id, 4);
 
@@ -73,6 +79,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
             product={product}
             selectedWeight={selectedWeight}
             selectedVariant={selectedVariant!}
+            selectedColor={selectedColor}
           />
         </div>
       </div>

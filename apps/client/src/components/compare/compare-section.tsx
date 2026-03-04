@@ -53,7 +53,10 @@ function CompareProductCard({
   }, [isDropdownOpen]);
 
   return (
-    <div className="rounded-2xl bg-white pb-5 block">
+    <Link
+      href={`/product/${product.id}`}
+      key={product.id}
+      className="rounded-2xl bg-white pb-5 block">
       <div className="relative overflow-hidden px-[27px] pt-[11px] rounded-t-2xl">
         {product.badge && <ProductBadge badge={product.badge} />}
         <Button
@@ -142,7 +145,7 @@ function CompareProductCard({
           <ShoppingCart className="w-4 h-4" />
         </Button>
       </div>
-    </div>
+    </Link>
   );
 }
 

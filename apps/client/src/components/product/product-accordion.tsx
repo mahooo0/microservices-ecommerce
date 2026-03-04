@@ -9,34 +9,53 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import type { ProductDetail } from "@/app/product/mock-data";
 
+function PlusMinusIcon() {
+  return (
+    <svg
+      className="shrink-0 transition-transform duration-200"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M10 0V20" stroke="currentColor" strokeWidth="2" className="origin-center transition-transform duration-200 group-data-[state=open]:rotate-90" />
+      <path d="M0 10L20 10" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  );
+}
+
 type Props = {
   product: ProductDetail;
 };
 
 export default function ProductAccordion({ product }: Props) {
   return (
-    <Accordion type="multiple" className="w-full">
-      <AccordionItem value="composition">
-        <AccordionTrigger className="text-xl font-semibold">
+    <Accordion type="multiple" className="w-full border-t border-grey-5 font-inter text-black-1">
+      <AccordionItem value="composition" className="group">
+        <AccordionTrigger className="text-xl font-medium cursor-pointer hover:no-underline [&>svg]:hidden">
           Склад
+          <PlusMinusIcon />
         </AccordionTrigger>
-        <AccordionContent className="text-grey-9 text-base">
+        <AccordionContent className="text-base">
           {product.composition}
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="description">
-        <AccordionTrigger className="text-xl font-semibold">
+      <AccordionItem value="description" className="group">
+        <AccordionTrigger className="text-xl font-medium cursor-pointer hover:no-underline [&>svg]:hidden">
           Опис
+          <PlusMinusIcon />
         </AccordionTrigger>
-        <AccordionContent className="text-grey-9 whitespace-pre-line text-base">
+        <AccordionContent className="whitespace-pre-line text-base">
           {product.fullDescription}
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="delivery">
-        <AccordionTrigger className="text-xl font-semibold">
+      <AccordionItem value="delivery" className="group">
+        <AccordionTrigger className="text-xl font-medium cursor-pointer hover:no-underline [&>svg]:hidden">
           Доставка
+          <PlusMinusIcon />
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-4">

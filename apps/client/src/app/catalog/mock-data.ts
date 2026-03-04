@@ -123,6 +123,11 @@ export type ProductVariant = {
   oldPrice?: number;
 };
 
+export type ProductColor = {
+  name: string;
+  hex: string;
+};
+
 export type Product = {
   id: number;
   type: "simple" | "variable";
@@ -134,6 +139,7 @@ export type Product = {
   oldPrice?: number;
   weight?: string;
   variants?: ProductVariant[];
+  colors?: ProductColor[];
   brand: string;
   class: string;
   age: string;
@@ -174,7 +180,7 @@ function generateVariants(basePrice: number, baseWeight: string, isSale: boolean
 
 export const mockProducts: Product[] = [
   { id: 1, type: "variable", badge: "top", image: "/images/product.png", name: "Royal Canin Maxi Adult", description: "Сухий корм для дорослих собак великих порід", price: 1850, weight: "15 кг", variants: generateVariants(1850, "15 кг", false), brand: "Royal Canin", class: "Преміум", age: "Дорослі", petSize: "Великі", weightCategory: "10-20 кг", foodType: "Сухий корм", country: "Франція", sale: false, categorySlug: "sobaky", subcategorySlug: "hoduvannia" },
-  { id: 2, type: "variable", image: "/images/product.png", name: "Acana Heritage Adult", description: "Сухий корм для дорослих собак усіх порід", price: 2450, weight: "11.4 кг", variants: generateVariants(2450, "11.4 кг", false), brand: "Acana", class: "Холістік", age: "Дорослі", petSize: "Середні", weightCategory: "10-20 кг", foodType: "Сухий корм", country: "Канада", sale: false, categorySlug: "sobaky", subcategorySlug: "hoduvannia" },
+  { id: 2, type: "variable", badge: "sale", image: "/images/product.png", name: "Acana Heritage Adult Large Breed Grain-Free", description: "Сухий корм для дорослих собак усіх порід", price: 2200, oldPrice: 2400, weight: "11.4 кг", variants: generateVariants(2200, "11.4 кг", true), colors: [{ name: "Червоний", hex: "#E85D5D" }, { name: "Зелений", hex: "#A8D86B" }, { name: "Фіолетовий", hex: "#C9A8D8" }, { name: "Персиковий", hex: "#E8D8A8" }], brand: "Acana", class: "Холістік", age: "Дорослі", petSize: "Середні", weightCategory: "10-20 кг", foodType: "Сухий корм", country: "Канада", sale: true, categorySlug: "sobaky", subcategorySlug: "hoduvannia" },
   { id: 3, type: "variable", badge: "new", image: "/images/product.png", name: "Brit Premium Adult L", description: "Повнораціонний корм для великих порід", price: 1320, weight: "15 кг", variants: generateVariants(1320, "15 кг", false), brand: "Brit", class: "Преміум", age: "Дорослі", petSize: "Великі", weightCategory: "10-20 кг", foodType: "Сухий корм", country: "Чехія", sale: false, categorySlug: "sobaky", subcategorySlug: "hoduvannia" },
   { id: 4, type: "variable", badge: "sale", image: "/images/product.png", name: "Josera SensiPlus", description: "Корм для вибагливих собак з качкою", price: 1680, oldPrice: 1980, weight: "12.5 кг", variants: generateVariants(1680, "12.5 кг", true), brand: "Josera", class: "Супер преміум", age: "Дорослі", petSize: "Середні", weightCategory: "10-20 кг", foodType: "Сухий корм", country: "Німеччина", sale: true, categorySlug: "sobaky", subcategorySlug: "hoduvannia" },
   { id: 5, type: "variable", image: "/images/product.png", name: "Orijen Original Dog", description: "Біологічно відповідний корм для собак", price: 3200, weight: "11.4 кг", variants: generateVariants(3200, "11.4 кг", false), brand: "Orijen", class: "Холістік", age: "Дорослі", petSize: "Середні", weightCategory: "10-20 кг", foodType: "Сухий корм", country: "Канада", sale: false, categorySlug: "sobaky", subcategorySlug: "hoduvannia" },

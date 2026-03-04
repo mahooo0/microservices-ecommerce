@@ -19,7 +19,7 @@ export default function WeightVariantSelector({
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       <span className="font-medium text-black-1">Вага</span>
       <div className="flex flex-wrap gap-2">
         {variants.map((variant) => {
