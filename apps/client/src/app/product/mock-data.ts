@@ -1,10 +1,6 @@
-import { type Product, mockProducts } from "@/app/catalog/mock-data";
+import { type Product, type ProductVariant, mockProducts } from "@/app/catalog/mock-data";
 
-export type ProductVariant = {
-  weight: string;
-  price: number;
-  oldPrice?: number;
-};
+export type { ProductVariant };
 
 export type ProductDetail = Product & {
   productCode: string;
