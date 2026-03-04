@@ -1,19 +1,20 @@
-import ProductList from "@/components/ProductList";
-import Image from "next/image";
+import Benefits from "@/components/home/benefits";
+import Boxes from "@/components/home/boxes";
+import FAQ from "@/components/home/faq";
+import HomeTop from "@/components/home/home-top";
+import Sales from "@/components/home/sales";
 
-const Homepage = async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ category: string }>;
-}) => {
-  const category = (await searchParams).category;
+const Homepage = async () => {
   return (
-    <div className="">
-      <div className="relative aspect-[3/1] mb-12">
-        <Image src="/featured.png" alt="Featured Product" fill />
+    <>
+      <HomeTop />
+      <Benefits />
+      <div className="overflow-hidden">
+        <Boxes />
+        <Sales />
       </div>
-      <ProductList category={category} params="homepage"/>
-    </div>
+      <FAQ className="bg-white"/>
+    </>
   );
 };
 
